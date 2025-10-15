@@ -23,4 +23,18 @@ function handleUnifiedChat(req, res) {
         });
 }
 
-module.exports = { handleUnifiedChat };
+function handleLawBotChat(req, res) {
+    const message = req.body.message;
+    if (!message) return res.status(400).json({ error: "Message is required" });
+
+    const prompt = promptManager.getLawBotPrompt(message);
+
+    geminiService.getGeminiResponse(prompt)
+        .then(aiReply => res.json({ reply: aiReply }))
+        .catch(err => {
+            console.error("LawBot Error:", err);
+            res.status(500).json({ error: "Internal Server Error" });
+        });
+}
+
+module.exports = { handleUnifiedChat, handleLawBotChat };
