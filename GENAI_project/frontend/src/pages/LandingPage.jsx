@@ -1,45 +1,70 @@
-import React from 'react';
+/* eslint-disable no-unused-vars */
+import React from "react";
+import { motion } from "framer-motion";
+import Header from "../components/Header";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import Features from "../components/Features";
 
-function LandingPage() {
+const LandingPage = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-r from-blue-500 to-indigo-600 flex flex-col items-center justify-center text-white px-4">
-      
-      {/* Header */}
-      <header className="text-center mb-12">
-        <h1 className="text-5xl font-bold mb-4">Welcome to ChatBuddy</h1>
-        <p className="text-lg md:text-xl max-w-xl mx-auto">
-          Your intelligent AI chatbot, ready to answer your questions and assist you 24/7.
-        </p>
-      </header>
+    <div className="min-h-screen pt-12 bg-gradient-to-r from-blue-500 to-indigo-600 text-white flex flex-col">
+      <Navbar />
 
-      {/* Chat Preview */}
-      <div className="bg-white text-gray-800 rounded-2xl shadow-lg w-full max-w-md p-6 mb-8">
-        <div className="space-y-4">
-          <div className="flex items-start">
-            <div className="bg-indigo-100 text-indigo-800 rounded-xl px-4 py-2 max-w-xs">
-              Hi! I am ChatBuddy 🤖. How can I help you today?
-            </div>
+      <Header />
+      
+      <Features />
+      <motion.section
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex flex-col items-center mb-12"
+      >
+        <h2 className="text-center text-2xl md:text-3xl font-bold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-300 to-indigo-200">
+          Empowering Citizens, Simplifying Governance
+        </h2>
+        <p className="text-center text-sm md:text-base text-indigo-100 mb-6">
+          Ask about laws, find eligible schemes, or translate government info instantly.
+        </p>
+
+        <div className="w-full max-w-xl bg-white/20 backdrop-blur-md rounded-2xl p-6 shadow-xl mb-6">
+          <div className="h-64 overflow-y-auto text-left p-3 rounded-lg bg-white/10 mb-4">
+            <p className="text-white italic">
+              CivicConnect AI: <span className="font-bold text-cyan-200">Hello! 👋</span> I can help you understand laws, find government schemes, or translate documents. How can I assist you today?
+            </p>
           </div>
-          <div className="flex justify-end">
-            <div className="bg-gray-200 text-gray-900 rounded-xl px-4 py-2 max-w-xs">
-              Hello! I want to know about your services.
-            </div>
+          <div className="flex gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="Type your message..."
+              className="flex-1 p-3 rounded-xl border border-white/20 bg-white/10 text-white placeholder-gray-300 font-medium focus:outline-none focus:ring-2 focus:ring-blue-300"
+            />
+            <button className="px-5 py-3 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-xl shadow-md hover:opacity-90 transition font-semibold text-white">
+              Send
+            </button>
+          </div>
+
+          {/* Quick action buttons */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-2">
+            <button className="flex-1 bg-white/20 hover:bg-white/30 transition rounded-xl py-2 font-medium text-white">
+              Find Government Schemes
+            </button>
+            <button className="flex-1 bg-white/20 hover:bg-white/30 transition rounded-xl py-2 font-medium text-white">
+              Simplify a Law
+            </button>
+            <button className="flex-1 bg-white/20 hover:bg-white/30 transition rounded-xl py-2 font-medium text-white">
+              Translate Document
+            </button>
           </div>
         </div>
+      </motion.section>
+
+
+      <div className="mt-16">
+        <Footer />
       </div>
-
-      {/* Call-to-Action */}
-      <button className="bg-white text-indigo-600 font-semibold px-8 py-3 rounded-full shadow-lg hover:bg-gray-100 transition">
-        Start Chatting
-      </button>
-
-      {/* Footer */}
-      <footer className="mt-12 text-gray-200 text-sm">
-        © 2025 ChatBuddy. All rights reserved.
-      </footer>
     </div>
   );
-}
+};
 
 export default LandingPage;
-
