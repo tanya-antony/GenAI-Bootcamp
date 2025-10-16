@@ -2,25 +2,19 @@ const promptManager = require('../utils/promptManager');
 const geminiService = require('../Controller/geminiService');
 
 
-function handleUnifiedChat(req, res) {
-    const message = req.body.message;
+async function handleUnifiedChat(req, res) {
+    try {
+        const body = req.body || {};
+        const message = body.message;
+        if (!message) return res.status(400).json({ error: "Message is required" });
 
-    if (!message) {
-        return res.status(400).json({ error: "Message is required" });
+        const prompt = promptManager.getUnifiedPrompt(message);
+        const aiReply = await geminiService.getGeminiResponse(prompt);
+        res.json({ reply: aiReply });
+    } catch (err) {
+        console.error("AI Service Error:", err);
+        res.status(500).json({ error: "Internal Server Error" });
     }
-
-    // Build prompt
-    const prompt = promptManager.getUnifiedPrompt(message);
-
-    // Get AI response (mock for now)
-    geminiService.getGeminiResponse(prompt)
-        .then(function (aiReply) {
-            res.json({ reply: aiReply });
-        })
-        .catch(function (err) {
-            console.error("AI Service Error:", err);
-            res.status(500).json({ error: "Internal Server Error" });
-        });
 }
 
 function handleLawBotChat(req, res) {
