@@ -21,8 +21,12 @@ const generateResponse = async (prompt) => {
         );
 
         // Safe extraction
-        const candidates = response.data?.candidates;
-        const text = candidates?.[0]?.content?.[0]?.text || "";
+        // const candidates = response.data?.candidates;
+        // const text = candidates?.[0]?.content?.[0]?.text || "";
+
+        const text = response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "";
+
+        
 
         if (!text) {
             console.warn("Gemini returned empty text. Returning default response.");
