@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import Sidebar from "../components/Sidebar";
+import FeatureNavbar from "../components/FeatureNavbar";
 
 function LawBotPage() {
   const [messages, setMessages] = useState([
-    { role: "bot", structured: [{ type: "text", text: "Hello! I’m LawBot ⚖️. How can I help you today?" }] },
+    { role: "bot", structured: [{ type: "text", text: <i>Hello! I’m LawBot ⚖️. How can I help you today?</i> }] },
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -38,7 +41,7 @@ function LawBotPage() {
       console.error("LawBot frontend error:", error);
       setMessages((prev) => [
         ...prev,
-        { role: "bot", structured: [{ type: "text", text: "⚠️ Error connecting to LawBot server." }] },
+        { role: "bot", structured: [{ type: "text", text: <i>⚠️ Error connecting to LawBot server.</i> }] },
       ]);
     } finally {
       setLoading(false);
@@ -46,53 +49,44 @@ function LawBotPage() {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100 text-gray-900">
-
+    <div className="flex h-screen bg-blue-50 text-gray-900 pt-16">
+      <FeatureNavbar
+        pageActionLabel="+ New Chat"
+        onActionClick={() => {
+          // clear messages or start a new chat
+          setMessages([
+            { role: "bot", structured: [{ type: "text", text: "Hello! I’m LawBot ⚖️. How can I help you today?" }] },
+          ]);
+        }}
+      />
       {/* Sidebar */}
-      <aside className="w-64 bg-blue-600 text-white flex flex-col justify-between">
-        <div>
-          <div className="p-6 border-b border-blue-500">
-            <h1 className="text-2xl font-semibold">LawBot ⚖️</h1>
-            <p className="text-sm text-blue-100">Your AI Legal Aid</p>
-          </div>
-          <div className="p-4 space-y-2 text-sm overflow-y-auto">
-            <button className="w-full bg-blue-500 hover:bg-blue-700 px-3 py-2 rounded-md text-left">
-              + New Chat
-            </button>
-            <div className="mt-4 text-blue-100 space-y-2">
-              <p className="font-medium uppercase text-xs text-blue-200">Recent</p>
-              <div className="bg-blue-500/40 px-3 py-2 rounded-md hover:bg-blue-500 cursor-pointer">
-                Drafting a rental agreement
-              </div>
-              <div className="bg-blue-500/40 px-3 py-2 rounded-md hover:bg-blue-500 cursor-pointer">
-                Understanding cyber law
-              </div>
-              <div className="bg-blue-500/40 px-3 py-2 rounded-md hover:bg-blue-500 cursor-pointer">
-                Filing a complaint letter
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="p-4 border-t border-blue-500 text-sm text-blue-100">
-          © 2025 CivicConnect AI <br />
-          <span className="text-blue-200 text-xs">Empowering Citizens, Simplifying Governance.</span>
-        </div>
-      </aside>
+      <Sidebar
+        title="LawBot ⚖️"
+        subtitle="Your AI Legal Aid"
+        themeColor="blue"
+        newChatLabel="+ New Chat"
+        recentChats={["Drafting a rental agreement", "Understanding cyber law", "Filing a complaint letter"]}
+        footerNote="Not a substitute for legal advice."
+        appName="CivicConnect AI"
+      />
 
       {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col">
-        <header className="p-4 border-b bg-white shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-800">LawBot Chat</h2>
+      <main className="flex-1 flex flex-col bg-white/80 backdrop-blur-sm border-l border-white/20">
+        {/* Header */}
+        <header className="p-4 border-b border-white/20 bg-blue-100/50 flex items-center">
+          <h2 className="text-lg font-semibold text-blue-800">LawBot Chat</h2>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
               <div
-                className={`max-w-xl px-4 py-3 rounded-lg shadow-sm ${msg.role === "user"
+                className={`max-w-xl px-4 py-3 rounded-2xl shadow-sm whitespace-pre-wrap ${
+                  msg.role === "user"
                     ? "bg-blue-600 text-white rounded-br-none"
-                    : "bg-white text-gray-800 border border-gray-200 rounded-bl-none"
-                  }`}
+                    : "bg-white text-blue-800 border border-blue-200 rounded-bl-none italic"
+                }`}
               >
                 {msg.role === "user" ? (
                   <p>{msg.text}</p>
@@ -101,7 +95,7 @@ function LawBotPage() {
                   msg.structured.map((item, idx) => (
                     <div key={idx} className="mb-4">
                       {item.type === "summary" && (
-                        <p className="font-semibold text-gray-700 mb-2">🧭 Summary: {item.text}</p>
+                        <p className="font-semibold text-blue-800 mb-2">🧭 Summary: {item.text}</p>
                       )}
 
                       {item.type === "section" && (
@@ -123,7 +117,7 @@ function LawBotPage() {
                               </div>
                             ))}
                           </div>
-                          <hr className="my-3 border-gray-300" />
+                          <hr className="my-3 border-blue-200" />
                         </div>
                       )}
 
@@ -137,28 +131,33 @@ function LawBotPage() {
 
           {loading && (
             <div className="flex justify-start">
-              <div className="bg-white border border-gray-200 px-4 py-2 rounded-lg italic text-gray-600">
+              <div className="bg-white border border-blue-200 px-4 py-2 rounded-2xl italic text-blue-600">
                 🤔 LawBot is thinking...
               </div>
             </div>
           )}
         </div>
 
-        <div className="p-4 border-t bg-white flex items-center gap-3">
+        {/* Input Box */}
+        <div className="p-4 border-t border-white/20 bg-blue-100/50 flex items-center gap-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask a legal question..."
-            className="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 border border-blue-200 rounded-full px-4 py-2 text-blue-800 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
           />
           <button
             onClick={handleSend}
             disabled={loading}
-            className="bg-blue-600 text-white px-5 py-2 rounded-full hover:bg-blue-700 transition"
+            className={`px-5 py-2 rounded-full text-white font-semibold transition ${
+              loading
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            Send
+            {loading ? "Thinking..." : "Send"}
           </button>
         </div>
       </main>
