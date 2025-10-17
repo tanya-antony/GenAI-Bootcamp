@@ -39,29 +39,56 @@ const generateResponse = async (prompt) => {
         // --- STRUCTURING LOGIC ---
         const lines = text.split('\n').filter(line => line.trim() !== '');
         const structured = { summary: '', sections: [] };
+
         let currentSection = null;
+        let currentSubheading = null;
 
-        for (let line of lines) {
+        lines.forEach(line => {
             line = line.trim();
-            const boldTitleMatch = line.match(/^\*\*(.+?)\*\*:?$/);
-            const colonTitleMatch = line.match(/^(.+?):$/);
 
-            if (boldTitleMatch) {
+            // Detect main section titles (bolded or ending with colon)
+            const sectionMatch = line.match(/^\*\*(.+?)\*\*$/) || line.match(/^(.+?):$/);
+            if (sectionMatch) {
                 if (currentSection) structured.sections.push(currentSection);
-                currentSection = { title: boldTitleMatch[1].trim(), content: [] };
-            } else if (colonTitleMatch) {
-                if (currentSection) structured.sections.push(currentSection);
-                currentSection = { title: colonTitleMatch[1].trim(), content: [] };
-            } else if (/^(\*|-|\d+\.)\s+/.test(line)) {
-                if (!currentSection) currentSection = { title: "Miscellaneous", content: [] };
-                const contentLine = line.replace(/^(\*|-|\d+\.)\s+/, '').trim();
-                currentSection.content.push(contentLine);
-            } else if (!currentSection && !structured.summary) {
-                structured.summary = line;
+                currentSection = { title: sectionMatch[1].trim(), content: [] };
+                currentSubheading = null;
+                return;
             }
-        }
+
+            // Detect subheadings like "**What it is:**" or "**Eligibility:**"
+            const subheadingMatch = line.match(/^\*\*(.+?)\*\*:?\s*(.*)/);
+            if (subheadingMatch) {
+                const [, subheading, content] = subheadingMatch;
+                currentSubheading = { subheading: subheading.trim(), text: content.trim() || '' };
+                currentSection?.content.push(currentSubheading);
+                return;
+            }
+
+            // Regular content lines
+            if (line.startsWith('- ') || line.startsWith('* ')) {
+                // Bullet points
+                const bulletText = line.replace(/^(-|\*)\s+/, '').trim();
+                if (currentSubheading) {
+                    currentSubheading.text += `\n- ${bulletText}`;
+                } else {
+                    currentSection?.content.push({ subheading: null, text: `- ${bulletText}` });
+                }
+            } else {
+                // Plain text lines
+                if (currentSubheading) {
+                    currentSubheading.text += ` ${line}`;
+                } else {
+                    currentSection?.content.push({ subheading: null, text: line });
+                }
+            }
+        });
 
         if (currentSection) structured.sections.push(currentSection);
+
+        // First non-empty line as summary (if not already set)
+        if (!structured.summary && structured.sections.length) {
+            structured.summary = structured.sections[0].content?.[0]?.text || "";
+        }
 
         return structured;
 
