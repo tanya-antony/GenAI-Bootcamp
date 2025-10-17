@@ -231,11 +231,21 @@ npm run dev
 
 # 4. Build for production
 npm run build
+```
 
 
 ## 👥 Contributors
 
-A huge thanks to everyone who contributed to **CivicConnect AI** 💙
+| Contributor | GitHub |
+|-------------|--------|
+| Claudia Jerome | [claudiajerome07](https://github.com/claudiajerome07) |
+| R John Robert | [JoRobert137](https://github.com/JoRobert137) |
+| Jeslin M  | [jeslinms111-cmyk](https://github.com/jeslinms111-cmyk) |
+| Tanya A | [Tanya-2408](https://github.com/Tanya-2408) |
+| Antony Felvyn | [antonyfelvyns111-afk](https://github.com/antonyfelvyns111-afk) |
+
+> Thanks to all our amazing contributors! 🚀
+
 
 <p align="center">
   <a href="https://github.com/claudiajerome07/GenAI-Bootcamp/graphs/contributors">
@@ -243,5 +253,4 @@ A huge thanks to everyone who contributed to **CivicConnect AI** 💙
   </a>
 </p>
 
-> Made with ❤️ using [contrib.rocks](https://contrib.rocks) — updates automatically as contributors grow.
-
+<p align="center">CodeZ ❤️</p>
