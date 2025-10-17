@@ -113,9 +113,12 @@ function LawBotPage() {
                                 {c.subheading ? (
                                   <p className="font-semibold">{c.subheading}: <span className="font-normal">{c.text}</span></p>
                                 ) : (
-                                  <div className="whitespace-pre-wrap">
-                                    <ReactMarkdown>{c.text}</ReactMarkdown>
-                                  </div>
+                                  
+                                <div className="prose prose-blue max-w-none prose-p:my-1 prose-li:my-0 prose-headings:mb-1">
+                                  <ReactMarkdown>{c.text}</ReactMarkdown>
+                                </div>
+
+                                    
                                 )}
                               </div>
                             ))}
