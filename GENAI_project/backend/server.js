@@ -8,7 +8,11 @@ const app = express();
 
 const PORT = process.env.PORT || 8080
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // or your frontend port
+    methods: ["POST", "GET"],
+    credentials: true,
+}));
 app.use(express.json());
 
 app.post('/api/chat',handleUnifiedChat)
