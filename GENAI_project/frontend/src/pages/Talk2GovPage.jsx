@@ -117,7 +117,13 @@ function Talk2GovPage() {
                             {item.content.map((c, jdx) => (
                               <div key={jdx}>
                                 {c.subheading && <p><strong>{c.subheading}:</strong> {c.text}</p>}
-                                {!c.subheading && <ReactMarkdown>{c.text}</ReactMarkdown>}
+                                {!c.subheading && 
+                                  <div className="prose prose-blue max-w-none prose-p:my-1 prose-li:my-0 prose-headings:mb-1">
+                                  <ReactMarkdown>{c.text}</ReactMarkdown>
+                                </div>
+                                
+                                
+                                }
                               </div>
                             ))}
                           </div>
