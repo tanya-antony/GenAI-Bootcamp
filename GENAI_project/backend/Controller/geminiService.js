@@ -109,4 +109,77 @@ const generateResponse = async (prompt, temperature = 0.3, top_p = 0.7) => {
     }
 };
 
-module.exports = { getGeminiResponse: generateResponse };
+// const generateTranslation = async (prompt, temperature = 0.3, top_p = 0.7) => {
+//     try {
+//         const response = await axios.post(
+//             GEMINI_API_URL,
+//             {
+//                 content: [{ text: prompt }], // updated key
+//                 generationConfig: {
+//                     temperature,
+//                     topP: top_p,
+//                     maxOutputTokens: 1000
+//                 }
+//             },
+//             {
+//                 headers: {
+//                     'Content-Type': 'application/json',
+//                     'x-goog-api-key': GEMINI_API_KEY
+//                 }
+//             }
+//         );
+
+//         const text = response.data?.candidates?.[0]?.content?.[0]?.text?.trim() || "";
+//         return text || "⚠️ Sorry, translation not available.";
+
+//     } catch (error) {
+//         console.error("Gemini Translation API error:", error.response?.data || error.message);
+//         return "⚠️ Sorry, there was an error generating the translation.";
+//     }
+// };
+
+
+const generateTranslation = async (textToTranslate, targetLanguage) => {
+    try {
+        const prompt = `Translate the following text into ${targetLanguage}. 
+Make sure the translation is natural and entirely in ${targetLanguage}, without any English words:
+
+"${textToTranslate}"`;
+
+        const response = await axios.post(
+            GEMINI_API_URL,
+            {
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: {
+                    temperature: 0.3,
+                    topP: 0.7,
+                    maxOutputTokens: 1000,
+                },
+            },
+            {
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": GEMINI_API_KEY,
+                },
+            }
+        );
+
+        const translatedText =
+            response.data?.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
+            "⚠️ Sorry, translation not available.";
+
+        return translatedText;
+    } catch (error) {
+        console.error(
+            "Gemini Translation API error:",
+            error.response?.data || error.message
+        );
+        return "⚠️ Sorry, there was an error generating the translation.";
+    }
+};
+
+
+module.exports = {
+    getGeminiResponse: generateResponse,
+    getTranslation: generateTranslation
+};
