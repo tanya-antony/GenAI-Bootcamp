@@ -45,7 +45,7 @@ function LanguageAssistantPage() {
 
     try {
       // ✅ Call updated backend route
-      const res = await axios.post("http://localhost:8080/api/translate", {
+      const res = await axios.post("https://civicconnectai.onrender.com/api/translate", {
         message: input,
         language: targetLang,
       });

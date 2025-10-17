@@ -29,7 +29,7 @@ function Talk2GovPage() {
     setLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/talk2gov", {
+      const response = await axios.post("https://civicconnectai.onrender.com/api/talk2gov", {
         message: input,
       });
       const aiReply = response.data.reply;
