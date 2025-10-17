@@ -1,28 +1,19 @@
-// 📁 src/pages/LanguageAssistantPage.jsx
+/* eslint-disable no-unused-vars */
+import Sidebar from "../components/Sidebar";
+import FeatureNavbar from "../components/FeatureNavbar";
 import React, { useState } from "react";
+import axios from "axios";
 
-const LanguageAssistantPage = () => {
-  const [inputText, setInputText] = useState("");
-  const [outputText, setOutputText] = useState("");
-  const [detectedLang, setDetectedLang] = useState("English 🇬🇧");
+function LanguageAssistantPage() {
+  const [messages, setMessages] = useState([
+    {
+      role: "bot",
+      text: <i>👋 Hello! I’m your Local Language Assistant. Paste or type any text and I’ll simplify or translate it.</i>,
+    },
+  ]);
+  const [input, setInput] = useState("");
   const [targetLang, setTargetLang] = useState("hi");
   const [loading, setLoading] = useState(false);
-
-  // 💬 Mock language detection logic
-  const detectLanguage = (text) => {
-    if (text.includes("नमस्ते")) return "Hindi 🇮🇳";
-    if (text.includes("vanakkam")) return "Tamil 🇮🇳";
-    if (text.includes("hola")) return "Spanish 🇪🇸";
-    return "English 🇬🇧";
-  };
-
-  // 🧠 Mock simplifier + translator
-  const simplifyText = (text) =>
-    text
-      .replace(/[.,;]/g, "")
-      .split(" ")
-      .slice(0, 15)
-      .join(" ") + " ... (simplified)";
 
   const getLangName = (code) => {
     const map = {
@@ -40,141 +31,135 @@ const LanguageAssistantPage = () => {
     return map[code] || "Unknown";
   };
 
-  // 🪄 Handle user typing
-  const handleInputChange = (e) => {
-    const text = e.target.value;
-    setInputText(text);
-    setDetectedLang(detectLanguage(text));
-  };
+  const handleSend = async () => {
+    if (!input.trim()) return;
 
-  // 🔄 Simulate translation process
-  const handleTranslate = () => {
-    if (!inputText.trim()) {
-      setOutputText("⚠️ Please enter some text to translate.");
-      return;
-    }
-
+    const userMessage = { role: "user", text: input };
+    setMessages((prev) => [...prev, userMessage]);
     setLoading(true);
-    setTimeout(() => {
-      setOutputText(
-        `✅ Translated to ${getLangName(targetLang)}:\n\n"${simplifyText(
-          inputText
-        )}"`
-      );
+
+    try {
+      const res = await axios.post("http://localhost:8080/api/translate", {
+        message: input,
+        language: targetLang,
+      });
+
+      const { detectedLanguage, translatedText } = res.data;
+
+      const botReply = {
+        role: "bot",
+        text: `✅ Detected: ${getLangName(detectedLanguage)}\nTranslated to ${getLangName(targetLang)}:\n"${translatedText || "No translation found."}"`,
+      };
+
+      setMessages((prev) => [...prev, botReply]);
+    } catch (err) {
+      console.error("Translation API error:", err);
+      const botReply = {
+        role: "bot",
+        text: "⚠️ Sorry, there was an error processing your request.",
+      };
+      setMessages((prev) => [...prev, botReply]);
+    } finally {
       setLoading(false);
-    }, 1000);
-  };
-
-  // 🎤 Placeholder for voice input
-  const handleVoiceInput = () => {
-    alert("🎙️ Voice input feature coming soon!");
-  };
-
-  // 🔊 Placeholder for voice output
-  const handleVoiceOutput = () => {
-    alert("🔊 Text-to-speech feature coming soon!");
+      setInput("");
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-100 to-purple-100 flex flex-col items-center justify-center p-6">
-      {/* Header */}
-      <header className="text-center mb-10">
-        <h1 className="text-4xl md:text-5xl font-bold text-indigo-700 drop-shadow-sm mb-2">
-          🌐 Local Language Accessibility Assistant
-        </h1>
-        <p className="text-gray-600 text-lg italic">
-          “Civic help in your own language.”
-        </p>
-      </header>
+    <div className="flex h-screen bg-blue-50 text-gray-900 pt-16">
+      <FeatureNavbar
+        pageActionLabel="+ New Chat"
+        onActionClick={() => {
+          // clear messages or start a new chat
+          setMessages([
+            { role: "bot", structured: [{ type: "text", text: "Hello! I’m LawBot ⚖️. How can I help you today?" }] },
+          ]);
+        }}
+      />
+      {/* Sidebar */}
+      <Sidebar
+        title="Language Assistant 🌐"
+        subtitle="Your Regional AI Guide"
+        themeColor="blue"
+        newChatLabel="+ New Translation"
+        recentChats={[]}
+        footerNote="Not a substitute for professional advice."
+        appName="CivicConnect AI"
+        className="pt-16" // add this
+      />
 
-      {/* Main Card */}
-      <main className="bg-white/70 backdrop-blur-xl shadow-xl rounded-2xl p-8 max-w-2xl w-full transition hover:shadow-2xl">
-        {/* Detected Language */}
-        <div className="text-sm text-indigo-600 font-semibold mb-4 text-right">
-          Detected Language: {detectedLang}
-        </div>
+      {/* Main Chat Area */}
+      <main className="flex-1 flex flex-col bg-white/80 backdrop-blur-sm border-l border-white/20">
+        {/* Header */}
+        <header className="p-4 border-b border-white/20 bg-blue-100/50 flex justify-between items-center">
+          <h2 className="text-lg font-semibold text-blue-800">
+            Local Language Chat
+          </h2>
 
-        {/* Input */}
-        <label className="block text-gray-700 font-medium mb-2">
-          Enter or Paste Text:
-        </label>
-        <textarea
-          rows="4"
-          value={inputText}
-          onChange={handleInputChange}
-          placeholder="Paste legal or civic text here..."
-          className="w-full p-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-indigo-400 outline-none transition resize-none mb-6"
-        ></textarea>
+          <select
+            value={targetLang}
+            onChange={(e) => setTargetLang(e.target.value)}
+            className="border border-blue-200 rounded-lg px-3 py-1 text-blue-800 focus:ring-2 focus:ring-blue-400 outline-none transition"
+          >
+            <option value="hi">Hindi</option>
+            <option value="bn">Bengali</option>
+            <option value="ta">Tamil</option>
+            <option value="te">Telugu</option>
+            <option value="mr">Marathi</option>
+            <option value="ml">Malayalam</option>
+            <option value="gu">Gujarati</option>
+            <option value="kn">Kannada</option>
+            <option value="pa">Punjabi</option>
+            <option value="ur">Urdu</option>
+          </select>
+        </header>
 
-        {/* Language Selector & Translate */}
-        <div className="flex flex-wrap gap-3 mb-6 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <label className="font-semibold text-gray-700">Translate to:</label>
-            <select
-              value={targetLang}
-              onChange={(e) => setTargetLang(e.target.value)}
-              className="p-2 border rounded-lg focus:ring-2 focus:ring-indigo-400"
+        {/* Chat Messages */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          {messages.map((msg, i) => (
+            <div
+              key={i}
+              className={`flex ${
+                msg.role === "user" ? "justify-end" : "justify-start"
+              }`}
             >
-              <option value="hi">Hindi</option>
-              <option value="bn">Bengali</option>
-              <option value="ta">Tamil</option>
-              <option value="te">Telugu</option>
-              <option value="mr">Marathi</option>
-              <option value="ml">Malayalam</option>
-              <option value="gu">Gujarati</option>
-              <option value="kn">Kannada</option>
-              <option value="pa">Punjabi</option>
-              <option value="ur">Urdu</option>
-            </select>
-          </div>
+              <div
+                className={`max-w-xl px-4 py-3 rounded-2xl shadow-sm whitespace-pre-wrap ${
+                  msg.role === "user"
+                    ? "bg-blue-600 text-white rounded-br-none"
+                    : "bg-white text-blue-800 border border-blue-200 rounded-bl-none italic"
+                }`}
+              >
+                {msg.text}
+              </div>
+            </div>
+          ))}
+        </div>
 
+        {/* Input Box */}
+        <div className="p-4 border-t border-white/20 bg-blue-100/50 flex items-center gap-3">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type or paste text here..."
+            className="flex-1 border border-blue-200 rounded-full px-4 py-2 text-blue-800 placeholder-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+          />
           <button
-            onClick={handleTranslate}
+            onClick={handleSend}
             disabled={loading}
-            className={`${
+            className={`px-5 py-2 rounded-full text-white font-semibold transition ${
               loading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
-            } text-white px-5 py-2 rounded-xl font-medium transition active:scale-95`}
+                ? "bg-blue-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
           >
-            {loading ? "Translating..." : "🔄 Translate"}
-          </button>
-        </div>
-
-        {/* Output */}
-        <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 min-h-[100px] text-gray-800 mb-6 whitespace-pre-wrap transition-all duration-500">
-          {outputText ? (
-            outputText
-          ) : (
-            <p className="text-sm text-gray-400 italic">
-              Your translated text will appear here...
-            </p>
-          )}
-        </div>
-
-        {/* Voice Controls */}
-        <div className="flex justify-between items-center">
-          <button
-            onClick={handleVoiceInput}
-            className="flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-800 transition"
-          >
-            🎙️ Speak Input
-          </button>
-          <button
-            onClick={handleVoiceOutput}
-            className="flex items-center gap-2 text-indigo-600 font-medium hover:text-indigo-800 transition"
-          >
-            🔊 Listen Output
+            {loading ? "Translating..." : "Send"}
           </button>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="mt-10 text-gray-500 text-sm text-center">
-        Built with ❤️ using React + Tailwind CSS • Smart Civic Tech for Everyone
-      </footer>
     </div>
   );
-};
+}
 
 export default LanguageAssistantPage;

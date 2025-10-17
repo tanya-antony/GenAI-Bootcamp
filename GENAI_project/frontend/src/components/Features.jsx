@@ -11,8 +11,8 @@ const features = [
     tagline: "AI Legal Aid",
     description: "Simplifies laws and generates documents like agreements or complaints.",
     icon: Scale,
-    iconColor: "text-blue-200",
-    hoverColor: "text-blue-400",
+    iconColor: "text-blue-100",
+    hoverColor: "text-blue-300",
     link: "/lawbot",
   },
   {
@@ -21,8 +21,8 @@ const features = [
     tagline: "Scheme Finder",
     description: "Finds eligible government schemes and guides you in filling forms.",
     icon: Landmark,
-    iconColor: "text-indigo-200",
-    hoverColor: "text-indigo-400",
+    iconColor: "text-indigo-100",
+    hoverColor: "text-indigo-300",
     link: "/talk2gov",
   },
   {
@@ -31,9 +31,9 @@ const features = [
     tagline: "Regional Support",
     description: "Translates legal & government info into local languages.",
     icon: Languages,
-    iconColor: "text-blue-200",
-    hoverColor: "text-blue-400",
-    link: "/language-assistant",
+    iconColor: "text-blue-100",
+    hoverColor: "text-blue-300",
+    link: "/language",
   },
 ];
 
@@ -51,15 +51,16 @@ const Features = () => {
           <Link
             key={feature.id}
             to={feature.link}
-            className="group flex-1 bg-white/10 border border-white/20 rounded-2xl p-6 text-center
-                       hover:bg-white/20 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 cursor-pointer"
+            className="group flex-1 bg-gradient-to-br from-blue-700 to-blue-900 border border-white/10 rounded-2xl p-6 text-center text-white
+              hover:from-blue-600 hover:to-blue-800 hover:-translate-y-1 hover:shadow-xl
+              transition-all duration-300 cursor-pointer"
           >
             <Icon
               className={`w-10 h-10 mx-auto mb-3 ${feature.iconColor} group-hover:${feature.hoverColor} transition-colors duration-300`}
             />
             <h3 className="text-lg font-semibold">{feature.title}</h3>
-            <p className="text-sm text-indigo-200 font-medium mb-2">{feature.tagline}</p>
-            <p className="text-gray-200 text-sm">{feature.description}</p>
+            <p className="text-sm text-blue-200 font-semibold mb-2">{feature.tagline}</p>
+            <p className="text-gray-100 text-sm">{feature.description}</p>
           </Link>
         );
       })}
