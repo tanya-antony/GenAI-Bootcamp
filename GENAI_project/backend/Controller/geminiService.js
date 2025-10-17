@@ -2,7 +2,6 @@ const axios = require('axios');
 require('dotenv').config();
 
 const MODEL_NAME = process.env.MODEL_NAME; 
-console.log("Using Gemini Model:", MODEL_NAME);
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent`;
 
@@ -109,42 +108,11 @@ const generateResponse = async (prompt, temperature = 0.3, top_p = 0.7) => {
     }
 };
 
-// const generateTranslation = async (prompt, temperature = 0.3, top_p = 0.7) => {
-//     try {
-//         const response = await axios.post(
-//             GEMINI_API_URL,
-//             {
-//                 content: [{ text: prompt }], // updated key
-//                 generationConfig: {
-//                     temperature,
-//                     topP: top_p,
-//                     maxOutputTokens: 1000
-//                 }
-//             },
-//             {
-//                 headers: {
-//                     'Content-Type': 'application/json',
-//                     'x-goog-api-key': GEMINI_API_KEY
-//                 }
-//             }
-//         );
-
-//         const text = response.data?.candidates?.[0]?.content?.[0]?.text?.trim() || "";
-//         return text || "⚠️ Sorry, translation not available.";
-
-//     } catch (error) {
-//         console.error("Gemini Translation API error:", error.response?.data || error.message);
-//         return "⚠️ Sorry, there was an error generating the translation.";
-//     }
-// };
 
 
-const generateTranslation = async (textToTranslate, targetLanguage) => {
+
+const generateTranslation = async (prompt) => {
     try {
-        const prompt = `Translate the following text into ${targetLanguage}. 
-Make sure the translation is natural and entirely in ${targetLanguage}, without any English words:
-
-"${textToTranslate}"`;
 
         const response = await axios.post(
             GEMINI_API_URL,

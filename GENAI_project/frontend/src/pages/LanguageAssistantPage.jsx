@@ -50,14 +50,19 @@ function LanguageAssistantPage() {
         language: targetLang,
       });
 
-      const { reply } = res.data;
+      const translatedText =
+        res.data?.reply?.trim() ||
+        res.data?.trim?.() ||
+        "⚠️ Sorry, translation not available.";
 
-      // ✅ Since backend returns plain text, we use reply directly
       const botReply = {
         role: "bot",
-
-        text: reply || "⚠️ Sorry, translation not available.",
-
+        structured: [
+          {
+            type: "text",
+            text: translatedText,
+          },
+        ],
       };
 
       setMessages((prev) => [...prev, botReply]);
@@ -65,10 +70,12 @@ function LanguageAssistantPage() {
       console.error("Translation API error:", err);
       const botReply = {
         role: "bot",
-        structured: [{
-          type: "text", 
-          text: "⚠️ Sorry, there was an error processing your request."
-        }]
+        structured: [
+          {
+            type: "text",
+            text: "⚠️ Sorry, there was an error processing your request.",
+          },
+        ],
       };
       setMessages((prev) => [...prev, botReply]);
     } finally {
@@ -114,7 +121,7 @@ function LanguageAssistantPage() {
         <header className="p-4 border-b border-white/20 bg-purple-100/50 flex items-center justify-between">
           <h2 className="text-lg font-semibold text-purple-800">
             Local Language Assistant
-=
+
           </h2>
           <div className="flex items-center gap-3">
             <span className="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">🌐 Multilingual</span>
