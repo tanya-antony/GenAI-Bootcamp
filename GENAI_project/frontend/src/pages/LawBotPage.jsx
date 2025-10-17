@@ -22,7 +22,7 @@ function LawBotPage() {
 
     try {
       // 1️⃣ Try RAG endpoint first
-      const response = await axios.post("http://localhost:8080/api/lawbot/rag", { 
+      const response = await axios.post("https://civicconnectai.onrender.com/api/lawbot/rag", { 
         question: input 
       });
 

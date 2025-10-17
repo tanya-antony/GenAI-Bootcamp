@@ -158,6 +158,7 @@ Here’s what we accomplished:
 - Enable users to **save chats**, **bookmark responses**, and **view history**.
 
 ### ⚙️ **5. Deployment & Scalability**
+- Deployment Link - civicconnectaiweb.netlify.app
 - Dockerize backend and frontend for easy deployment  
 - Add CI/CD workflows for production build  
 - Optimize for mobile-first performance
